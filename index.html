@@ -5,9 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
   <title>Roots — Something went wrong</title>
+
+  <!--
+    Static mirror of roots' brand-v2 500 page (app/views/errors/_error_body_v2.html.erb
+    rendered inside layouts/errors.html.erb, with GroveUi::Brand.v2? true).
+
+    Heroku's ERROR_PAGE_URL serves this document from the APP's origin, so every asset
+    reference has to be an absolute https URL back to GitHub Pages — a relative src
+    resolves against app.investwithroots.com and 404s. Same reason the CSS is inlined
+    rather than split into a stylesheet.
+
+    Colour and type values are the resolved v2 design tokens from grove-ui's
+    config/tailwind/tokens.cjs, not eyeballed. Named in comments so the next person can
+    diff them against the source of truth:
+      c-green-700       #123f2e  logo bar, button label  (guide role: Dark Green)
+      c-gray-800        #222222  headline
+      c-gray-400        #6e6e6e  body copy               (guide role: Light Text)
+      c-primary-teal    #0c883b  inline link             (guide role: Green Text on White)
+      c-green-500       #49e885  button surface
+      c-green-pressed   #0dd075  button hover/pressed
+    Fonts follow the v2 role mapping: Fraunces (font-sans) for display, Figtree
+    (font-inter) for body and buttons.
+  -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Axis lists copied from roots' application.tailwind.css. Fraunces' SOFT@...,100
+       is its ROUNDED cut and must ride in the request, not in a token — drop it and
+       this renders the wrong Fraunces. -->
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Fraunces:opsz,wght,SOFT@9..144,100..900,100&display=swap" rel="stylesheet">
+
   <style>
     * {
       margin: 0;
@@ -15,10 +42,44 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --c-green-700: #123f2e;
+      --c-green-500: #49e885;
+      --c-green-pressed: #0dd075;
+      --c-gray-800: #222222;
+      --c-gray-400: #6e6e6e;
+      --c-primary-teal: #0c883b;
+
+      --font-display: Fraunces, ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+      --font-body: Figtree, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    html,
     body {
-      font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      height: 100%;
+      width: 100%;
       background: #ffffff;
-      color: #212529;
+      font-family: var(--font-body);
+      font-weight: 400;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Logo bar. LogoWhiteYellow_v2.svg is monochrome Cream, so the bar behind it is
+       Dark Green — matching the numerals in the error art. */
+    .brand-bar {
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+      background: var(--c-green-700);
+    }
+
+    .brand-bar img {
+      height: 48px;
+      width: auto;
+      max-width: 150px;
+      margin: auto;
     }
 
     .container {
@@ -26,8 +87,6 @@
       flex-direction: column-reverse;
       align-items: center;
       gap: 48px;
-      min-height: 100vh;
-      padding: 32px 0;
     }
 
     .content {
@@ -40,20 +99,23 @@
     }
 
     h1 {
-      font-size: 30px;
-      line-height: 36px;
+      font-family: var(--font-display);
+      font-size: 1.875rem;
+      line-height: 2.25rem;
       font-weight: 600;
+      color: var(--c-gray-800);
     }
 
     .content p {
       margin-top: 10px;
-      font-size: 20px;
-      line-height: 28px;
+      font-size: 1.25rem;
+      line-height: 1.75rem;
       font-weight: 400;
+      color: var(--c-gray-400);
     }
 
     .content p a {
-      color: #318768;
+      color: var(--c-primary-teal);
       text-decoration: none;
     }
 
@@ -61,16 +123,38 @@
       text-decoration: underline;
     }
 
-    .btn {
+    /* grove-ui ButtonComponent, color: :green, size: :lg, under brand v2 — the full
+       pill with the frames' fixed 48px height. The wrapper carries the width cap
+       (max-w-72) and the vertical rhythm (my-10) exactly as the ERB does. */
+    .btn-wrap {
       margin: 40px auto;
-      padding: 16px 24px;
-      max-width: fit-content;
-      background: #318768;
+      width: 100%;
+      max-width: 288px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 48px;
+      padding: 0 24px;
       border-radius: 9999px;
-      font-size: 18px;
+      background: var(--c-green-500);
+      color: var(--c-green-700);
+      font-family: var(--font-body);
+      font-size: 1rem;
       font-weight: 600;
-      color: #ffffff;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
       text-decoration: none;
+    }
+
+    .btn:hover,
+    .btn:active {
+      background: var(--c-green-pressed);
     }
 
     .image-col {
@@ -88,8 +172,7 @@
     @media (min-width: 768px) {
       .container {
         flex-direction: row;
-        height: 100vh;
-        padding: 0;
+        height: calc(100vh - 80px);
       }
 
       .content {
@@ -98,30 +181,48 @@
       }
 
       h1 {
-        font-size: 48px;
+        font-size: 3rem;
         line-height: 1;
       }
 
-      .btn {
+      .btn-wrap {
         margin-left: 0;
-        font-size: 20px;
       }
 
       .image-col img {
         width: 500px;
       }
     }
+
+    /* `short:` — roots' max-height:620px variant. Releases the viewport-locked height
+       so the art and copy don't collide on short windows. */
+    @media (max-height: 620px) {
+      .container {
+        height: auto !important;
+        padding: 32px 0;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="content">
-      <h1>Well, this is unexpected</h1>
-      <p>The server encountered an error and could not complete your request. Try again later. If the problem persists, please <a href="mailto:investment@investwithroots.com">report your problem</a> and mention this error message and the query that caused it.</p>
-      <a class="btn" href="https://app.investwithroots.com/dashboard">Back to Dashboard</a>
+  <div>
+    <div class="brand-bar">
+      <img src="https://invest-with-roots.github.io/roots-500/LogoWhiteYellow_v2.svg" alt="Roots Logo">
     </div>
-    <div class="image-col">
-      <img src="https://invest-with-roots.github.io/roots-500/rooty_500.gif" alt="Rooty 500" id="rooty-error">
+
+    <div class="container">
+      <div class="content">
+        <h1>Well, this is unexpected</h1>
+        <p>The server encountered an error and could not complete your request. Try again later. If the problem persists, please <a href="mailto:investment@investwithroots.com">report your problem</a> and mention this error message and the query that caused it.</p>
+        <div class="btn-wrap">
+          <a class="btn" href="https://app.investwithroots.com/dashboard">Back to Dashboard</a>
+        </div>
+      </div>
+      <!-- The v2 art carries the numerals itself — the digits with Rooty standing in
+           for the 0 — so nothing here renders "500" as text. -->
+      <div class="image-col">
+        <img src="https://invest-with-roots.github.io/roots-500/rooty_500_v2.svg" alt="Rooty 500" id="rooty-error">
+      </div>
     </div>
   </div>
 </body>
